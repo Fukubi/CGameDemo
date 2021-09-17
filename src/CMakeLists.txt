@@ -5,4 +5,5 @@ target_include_directories(${PROJECT_NAME} PUBLIC grass_tile)
 target_sources(${PROJECT_NAME} PUBLIC ${SRCS} 
     grass_tile/grass_tile.c
     dirt_tile/dirt_tile.c
-    dirt_border_up_tile/dirt_border_up_tile.c)
+    dirt_border_up_tile/dirt_border_up_tile.c
+    dirt_border_down_tile/dirt_border_down_tile.c)

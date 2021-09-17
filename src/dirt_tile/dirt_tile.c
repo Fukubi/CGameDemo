@@ -4,7 +4,7 @@
 
 void dirt_tile_initializeTexture(dirt_tile *tile, SDL_Renderer *renderer) {
   tile->texture =
-      IMG_LoadTexture(renderer, "../resources/Tiles/generic-rpg-tile71.png");
+      IMG_LoadTexture(renderer, "resources/Tiles/generic-rpg-tile71.png");
 
   if (!tile->texture)
     fprintf(stderr, "Error loading dirt texture: %s\n", SDL_GetError());

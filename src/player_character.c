@@ -6,13 +6,13 @@
 void player_character_initializeCharacterTextures(player_character *player,
                                           SDL_Renderer *renderer) {
   player->idleTextures[0] =
-      IMG_LoadTexture(renderer, "../resources/Bandit/Bandit_Idle_1.png");
+      IMG_LoadTexture(renderer, "resources/Bandit/Bandit_Idle_1.png");
   player->idleTextures[1] =
-      IMG_LoadTexture(renderer, "../resources/Bandit/Bandit_Idle_2.png");
+      IMG_LoadTexture(renderer, "resources/Bandit/Bandit_Idle_2.png");
   player->idleTextures[2] =
-      IMG_LoadTexture(renderer, "../resources/Bandit/Bandit_Idle_3.png");
+      IMG_LoadTexture(renderer, "resources/Bandit/Bandit_Idle_3.png");
   player->idleTextures[3] =
-      IMG_LoadTexture(renderer, "../resources/Bandit/Bandit_Idle_4.png");
+      IMG_LoadTexture(renderer, "resources/Bandit/Bandit_Idle_4.png");
 
   for (int i = 0; i < PLAYER_CHARACTER_NUMBER_OF_IDLE_TEXTURES; i++) {
     if (player->idleTextures[i] == NULL)

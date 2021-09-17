@@ -9,7 +9,6 @@ typedef struct grass_tile {
   SDL_Texture *texture;
 } grass_tile;
 
-
 void grass_tile_initializeTexture(grass_tile *tile, SDL_Renderer *renderer);
 void grass_tile_destroyTexture(grass_tile *tile);
 

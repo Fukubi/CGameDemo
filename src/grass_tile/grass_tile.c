@@ -4,7 +4,7 @@
 
 void grass_tile_initializeTexture(grass_tile *tile, SDL_Renderer *renderer) {
   tile->texture =
-      IMG_LoadTexture(renderer, "../resources/Tiles/generic-rpg-Slice.png");
+      IMG_LoadTexture(renderer, "resources/Tiles/generic-rpg-Slice.png");
 
   if (!tile->texture)
     fprintf(stderr, "Error loading grass texture: %s\n", SDL_GetError());

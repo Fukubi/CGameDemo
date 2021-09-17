@@ -7,9 +7,12 @@
 #include <SDL2/SDL_scancode.h>
 #include <SDL2/SDL_surface.h>
 #include <SDL2/SDL_timer.h>
+#include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_video.h>
 #include <stdio.h>
 
+#include "dirt_border_down_tile/dirt_border_down_tile.h"
+#include "dirt_border_up_tile/dirt_border_up_tile.h"
 #include "dirt_tile/dirt_tile.h"
 #include "grass_tile/grass_tile.h"
 #include "includes/player_character.h"
@@ -17,9 +20,19 @@
 #define WINDOW_WIDTH 640
 #define WINDOW_HEIGHT 480
 
-static void render_dirt_path(dirt_tile tile, SDL_Renderer *renderer) {
+static void render_dirt_path(dirt_tile tile, dirt_border_up_tile tileBorderUp,
+                             dirt_border_down_tile tileBorderDown,
+                             SDL_Renderer *renderer) {
+  dirt_border_up_tile_renderLineXAxis(&tileBorderUp, renderer, 5, 32 * 0,
+                                      32 * 6);
+  dirt_border_up_tile_renderLineXAxis(&tileBorderUp, renderer, 11, 32 * 8,
+                                      32 * 6);
   dirt_tile_renderLineXAxis(&tile, renderer, 19, 32 * 0, 32 * 7);
   dirt_tile_renderLineXAxis(&tile, renderer, 19, 32 * 0, 32 * 8);
+  dirt_border_down_tile_renderLineXAxis(&tileBorderDown, renderer, 11, 32 * 0,
+                                        32 * 9);
+  dirt_border_down_tile_renderLineXAxis(&tileBorderDown, renderer, 5, 32 * 14,
+                                        32 * 9);
 
   dirt_tile_renderLineYAxis(&tile, renderer, 6, 32 * 6, 32 * 0);
   dirt_tile_renderLineYAxis(&tile, renderer, 6, 32 * 7, 32 * 0);
@@ -33,9 +46,22 @@ int main(int argc, char *argv[]) {
   player_character player;
   grass_tile grass;
   dirt_tile dirt;
+  dirt_border_up_tile dirtBorderUp;
+  dirt_border_down_tile dirtBorderDown;
 
   if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
     fprintf(stderr, "Error initializing SDL: %s\n", SDL_GetError());
+    return 1;
+  }
+
+  TTF_Init();
+
+  TTF_Font *font = TTF_OpenFont("resources/Fonts/LEMONMILK-Medium.otf", 24);
+
+  if (!font) {
+    fprintf(stderr, "Error loading font: %s\n", TTF_GetError());
+
+    SDL_Quit();
     return 1;
   }
 
@@ -66,8 +92,23 @@ int main(int argc, char *argv[]) {
   player.sprite.y = WINDOW_HEIGHT / 2;
 
   grass_tile_initializeTexture(&grass, mainRenderer);
-  
+
   dirt_tile_initializeTexture(&dirt, mainRenderer);
+
+  dirt_border_up_tile_initializeTexture(&dirtBorderUp, mainRenderer);
+
+  dirt_border_down_tile_initializeTexture(&dirtBorderDown, mainRenderer);
+
+  SDL_Color color = {255, 255, 255};
+  SDL_Surface *surface =
+      TTF_RenderText_Solid(font, "Welcome to this DEMO.", color);
+
+  SDL_Texture *textTexture1 =
+      SDL_CreateTextureFromSurface(mainRenderer, surface);
+  SDL_FreeSurface(surface);
+
+  SDL_Rect textRect;
+  SDL_QueryTexture(textTexture1, NULL, NULL, &textRect.w, &textRect.h);
 
   while (1) {
     SDL_Event event;
@@ -99,9 +140,11 @@ int main(int argc, char *argv[]) {
         grass_tile_renderTile(&grass, mainRenderer, 32 * j, posY);
     }
 
-    render_dirt_path(dirt, mainRenderer);
+    render_dirt_path(dirt, dirtBorderUp, dirtBorderDown, mainRenderer);
 
     player_character_renderIdle(&player, mainRenderer, &idleFrame);
+
+    SDL_RenderCopy(mainRenderer, textTexture1, NULL, &textRect);
 
     SDL_RenderPresent(mainRenderer);
 
@@ -115,6 +158,10 @@ int main(int argc, char *argv[]) {
 
   SDL_DestroyRenderer(mainRenderer);
   SDL_DestroyWindow(window);
+
+  SDL_DestroyTexture(textTexture1);
+  TTF_CloseFont(font);
+  TTF_Quit();
   SDL_Quit();
   return 0;
 }
