@@ -1,0 +1,4 @@
+#ifndef DIRT_BORDER_UP_TILE_H
+#define DIRT_BORDER_UP_TILE_H
+
+#endif

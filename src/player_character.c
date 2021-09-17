@@ -1,37 +1,47 @@
-#include "includes/player_character.h"
+#include "player_character.h"
 #include <SDL2/SDL_error.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_render.h>
 
+void player_character_initializeCharacterTextures(player_character *player,
+                                          SDL_Renderer *renderer) {
+  player->idleTextures[0] =
+      IMG_LoadTexture(renderer, "../resources/Bandit/Bandit_Idle_1.png");
+  player->idleTextures[1] =
+      IMG_LoadTexture(renderer, "../resources/Bandit/Bandit_Idle_2.png");
+  player->idleTextures[2] =
+      IMG_LoadTexture(renderer, "../resources/Bandit/Bandit_Idle_3.png");
+  player->idleTextures[3] =
+      IMG_LoadTexture(renderer, "../resources/Bandit/Bandit_Idle_4.png");
+
+  for (int i = 0; i < PLAYER_CHARACTER_NUMBER_OF_IDLE_TEXTURES; i++) {
+    if (player->idleTextures[i] == NULL)
+      fprintf(stderr, "Error initializing player IDLE texture: %s\n",
+              SDL_GetError());
+  }
+}
+
 void player_character_renderIdle(player_character *player,
                                  SDL_Renderer *renderer, int *animationTime) {
-  SDL_Texture *tex;
+  int idleTextureId = 0;
 
   if (*animationTime >= 1 && *animationTime < 5)
-    tex = IMG_LoadTexture(renderer, "../resources/Bandit/Bandit_Idle_1.png");
+    idleTextureId = 0;
   else if (*animationTime >= 5 && *animationTime < 10)
-    tex = IMG_LoadTexture(renderer, "../resources/Bandit/Bandit_Idle_2.png");
+    idleTextureId = 1;
   else if (*animationTime >= 10 && *animationTime < 15)
-    tex = IMG_LoadTexture(renderer, "../resources/Bandit/Bandit_Idle_3.png");
+    idleTextureId = 2;
   else if (*animationTime >= 15 && *animationTime < 20)
-    tex = IMG_LoadTexture(renderer, "../resources/Bandit/Bandit_Idle_4.png");
+    idleTextureId = 3;
   else
-    *animationTime = 1;
+    *animationTime = 0;
 
-  if (!tex)
-    fprintf(stderr, "Error loading texture: %s\n", SDL_GetError());
-
-  SDL_QueryTexture(tex, NULL, NULL, &player->sprite.w, &player->sprite.h);
+  SDL_QueryTexture(player->idleTextures[idleTextureId], NULL, NULL, &player->sprite.w, &player->sprite.h);
 
   player->sprite.w *= 2;
   player->sprite.h *= 2;
 
-  SDL_RenderClear(renderer);
-
-  SDL_RenderCopy(renderer, tex, NULL, &player->sprite);
-	SDL_RenderPresent(renderer);
-
-  SDL_DestroyTexture(tex);
+  SDL_RenderCopy(renderer, player->idleTextures[idleTextureId], NULL, &player->sprite);
 }
 
 void player_character_moveLeft(player_character *player,
@@ -51,15 +61,21 @@ void player_character_moveRight(player_character *player,
 }
 
 void player_character_moveUp(player_character *player, const float LIMITMOVE) {
-	player->sprite.y -= 20;
+  player->sprite.y -= 20;
 
-	if (player->sprite.y <= LIMITMOVE)
-		player->sprite.y = LIMITMOVE;
+  if (player->sprite.y <= LIMITMOVE)
+    player->sprite.y = LIMITMOVE;
 }
 
-void player_character_moveDown(player_character *player, const float LIMITMOVE) {
-	player->sprite.y += 20;
+void player_character_moveDown(player_character *player,
+                               const float LIMITMOVE) {
+  player->sprite.y += 20;
 
-	if (player->sprite.y >= LIMITMOVE)
-		player->sprite.y = LIMITMOVE;
+  if (player->sprite.y >= LIMITMOVE)
+    player->sprite.y = LIMITMOVE;
+}
+
+void player_character_destroyTexture(player_character *player) {
+  for (int i = 0; i < PLAYER_CHARACTER_NUMBER_OF_IDLE_TEXTURES; i++)
+    SDL_DestroyTexture(player->idleTextures[i]);
 }
