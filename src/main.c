@@ -47,8 +47,6 @@ int main(int argc, char *argv[]) {
     return 1;
   }
 
-  player_character_renderIdle(&player, renderer, &idleFrame);
-
   player.sprite.x = WINDOW_WIDTH / 2;
   player.sprite.y = WINDOW_HEIGHT / 2;
 
@@ -82,51 +80,24 @@ int main(int argc, char *argv[]) {
       }
     }
 
+    if (walkLeft)
+      player_character_moveLeft(&player, 0);
+
+    if (walkRight)
+      player_character_moveRight(&player, (WINDOW_WIDTH - player.sprite.w));
+
+    if (walkUp)
+      player_character_moveUp(&player, 0);
+
+    if (walkDown)
+      player_character_moveDown(&player, (WINDOW_HEIGHT - player.sprite.h));
+
     player_character_renderIdle(&player, renderer, &idleFrame);
 
-    if (walkLeft) {
-      player.sprite.x -= 20;
-
-      if (player.sprite.x <= 0) {
-        player.sprite.x = 0;
-      }
-    }
-
-    if (walkRight) {
-      player.sprite.x += 20;
-
-      if (player.sprite.x >= (WINDOW_WIDTH - player.sprite.w)) {
-        player.sprite.x = WINDOW_WIDTH - player.sprite.w;
-      }
-    }
-
-    if (walkUp) {
-      player.sprite.y -= 20;
-
-      if (player.sprite.y <= 0) {
-        player.sprite.y = 0;
-      }
-    }
-
-    if (walkDown) {
-      player.sprite.y += 20;
-
-      if (player.sprite.y >= WINDOW_HEIGHT - player.sprite.h) {
-        player.sprite.y = WINDOW_HEIGHT - player.sprite.h;
-      }
-    }
-
-    SDL_RenderClear(renderer);
-
-    SDL_RenderCopy(renderer, player.texture, NULL, &player.sprite);
-    SDL_RenderPresent(renderer);
-
     idleFrame++;
-
     SDL_Delay(1000 / 60);
   }
 
-  player_character_DestroyPlayer(&player);
   SDL_DestroyRenderer(renderer);
   SDL_DestroyWindow(window);
   SDL_Quit();
