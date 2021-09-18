@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "sdl_rect.h": "c",
-        "dirt_border_up_tile.h": "c"
+        "dirt_border_up_tile.h": "c",
+        "player_character.h": "c"
     }
 }
